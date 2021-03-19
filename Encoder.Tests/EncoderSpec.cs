@@ -1,11 +1,11 @@
-using System;
-using Xunit;
-using System.Diagnostics;
 using Encoder;
+using System;
+using System.Diagnostics;
+using Xunit;
 
 namespace Service.Tests
 {
-    /************** Rules
+	/************** Rules
     //vowels are replaced with number: a -> 1, e -> 2, i -> 3, o -> 4, and u -> 5
     //consonants are replaced with previous letter: b -> a, c -> b, d -> c, etc.
     //y is replaced with space
@@ -14,7 +14,7 @@ namespace Service.Tests
     //other characters remain unchanged (punctuation, etc.)
     //all output should be lower case, regardless of input case ("Hello World" should produce the same result as "hello world")
     *****/
-    public class EncoderSpec
+	public class EncoderSpec
     {
         [Theory]
         [InlineData("Hello World! 1234", "g2kk4yv4qkc!y4321")]
@@ -32,6 +32,18 @@ namespace Service.Tests
             stopWatch.Stop();
             Console.WriteLine("Memory (MB): " + (GC.GetTotalMemory(false) * 0.000001) );
             Console.WriteLine("Runtime: " + stopWatch.ElapsedMilliseconds + "ms");
+        }
+
+        [Theory]
+        [InlineData( "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", "                                                            " )]
+        [InlineData( "                                                            ", "yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy" )]
+        [InlineData( "1234567890aeioubcdxyz", "098765432112345abcw y" )]
+        [InlineData( "jaggu.81993@gmail.com", "i1ff5.39918@fl13k.b4l" )]
+        [InlineData( "!@#$%^&**()_+{}\":?><~", "!@#$%^&**()_+{}\":?><~" )]
+        [InlineData( "My name is Jagadeesh!", "l ym1l2y3ryi1f1c22rg!" )]
+        public void Encoder_HashesStringCorrectly_MoreInputs( string toEncode, string expected )
+        {
+            Assert.Equal( expected, new EncoderProcessor( ).Encode( toEncode ) );
         }
     }
 }
